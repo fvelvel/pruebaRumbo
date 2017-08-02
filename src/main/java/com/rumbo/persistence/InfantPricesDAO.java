@@ -8,12 +8,16 @@ import java.sql.Statement;
 
 public class InfantPricesDAO {
 
+	private final String SELECT_INFANTPRICES = "SELECT * FROM INFANTPRICES WHERE IATA = ?";
+	private final String INSERT_INFANTPRICES = "INSERT INTO INFANTPRICES(IATA,price) VALUES (?,?)";
+	private final String CREATE_INFANTPRICES = "CREATE TABLE INFANTPRICES(IATA varchar(255), price int)";
+	
 	public int getPriceFromIATA(String IATA) throws SQLException{
 		Connection conn = Conexion.getDBConnection();
 		PreparedStatement stmt = null;
 		int price=0;
 		try{
-			stmt = conn.prepareStatement("SELECT * FROM INFANTPRICES WHERE IATA = ?");
+			stmt = conn.prepareStatement(SELECT_INFANTPRICES);
 			stmt.setString(1, IATA);
 			ResultSet rs = stmt.executeQuery();
 			if(rs.next()){
@@ -31,7 +35,7 @@ public class InfantPricesDAO {
 		Connection conn = Conexion.getDBConnection();
 		PreparedStatement stmt = null;
 		try{
-			stmt = conn.prepareStatement("INSERT INTO INFANTPRICES(IATA,price) VALUES (?,?)");
+			stmt = conn.prepareStatement(INSERT_INFANTPRICES);
 			stmt.setString(1,IATA);
 			stmt.setDouble(2,price);
 			stmt.execute();
@@ -47,7 +51,7 @@ public class InfantPricesDAO {
 		Statement stmt = null;
 		try{
 			stmt = conn.createStatement();
-			stmt.execute("CREATE TABLE INFANTPRICES(IATA varchar(255), price int)");
+			stmt.execute(CREATE_INFANTPRICES);
 		} catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
         } finally {

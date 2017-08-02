@@ -12,12 +12,16 @@ import com.rumbo.beans.Flight;
 
 public class FlightDAO {
 
+	private final String SELECT_FLIGHTS = "SELECT * FROM FLIGHTS WHERE origin = ? and destination = ?";
+	private final String INSERT_FLIGHT =  "INSERT INTO FLIGHTS(origin, destination, airline, baseprice) VALUES(?,?,?,?)";
+	private final String CREATE_FLIGHTS = "CREATE TABLE FLIGHTS(origin varchar(255), destination varchar(255), airline varchar(255), baseprice int)";
+	
 	public List<Flight> getFlightsFromOriginAndDestination(String origin, String destination) throws SQLException{
 		Connection conn = Conexion.getDBConnection();
 		List<Flight> flights = new ArrayList<Flight>();
 		PreparedStatement stmt = null;
 		try{
-			stmt = conn.prepareStatement("SELECT * FROM FLIGHTS WHERE origin = ? and destination = ?");
+			stmt = conn.prepareStatement(SELECT_FLIGHTS);
 			stmt.setString(1,origin);
 			stmt.setString(2,destination);
 			ResultSet rs = stmt.executeQuery();
@@ -38,7 +42,7 @@ public class FlightDAO {
 		Connection conn = Conexion.getDBConnection();
 		PreparedStatement stmt = null;
 		try{
-			stmt = conn.prepareStatement("INSERT INTO FLIGHTS(origin, destination, airline, baseprice) VALUES(?,?,?,?)");
+			stmt = conn.prepareStatement(INSERT_FLIGHT);
 			stmt.setString(1,origin);
 			stmt.setString(2,destination);
 			stmt.setString(3,airline);
@@ -56,7 +60,7 @@ public class FlightDAO {
 		Statement stmt = null;
 		try{
 			stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE FLIGHTS(origin varchar(255), destination varchar(255), airline varchar(255), baseprice int)");
+            stmt.execute(CREATE_FLIGHTS);
 		} catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
         } finally {
